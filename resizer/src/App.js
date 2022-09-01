@@ -1,18 +1,21 @@
 import logo from "./logo.svg";
 import "./App.css";
 import { useRef, useState, useEffect } from "react";
+import { FileUploader } from "react-drag-drop-files";
 import { saveAs } from "file-saver";
+const fileTypes = ["JPG", "PNG", "GIF"];
 function App() {
   const [img, setImg] = useState("");
+  const [file, setFile] = useState(null);
   const [height, setHeight] = useState(100);
-  const [WIDTH, setWidth] = useState(1000);
+  const [width, setwidth] = useState(400);
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    console.log(img);
+  const handleImage = (e) => {
+    setFile(e.target.files[0]);
   };
 
-  const handleFile = (file) => {
+  const handleFile = (event) => {
+    event.preventDefault();
     let reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = (event) => {
@@ -23,10 +26,10 @@ function App() {
 
       image.onload = (e) => {
         let canvas = document.createElement("canvas");
-        let ratio = WIDTH / image.width;
-        canvas.width = WIDTH;
-        canvas.height = image.height * ratio;
-        setHeight(image.height * ratio);
+        // let ratio = width / image.width;
+        canvas.width = width;
+        canvas.height = height;
+        // setHeight(image.height * ratio);
 
         let context = canvas.getContext("2d");
         context.drawImage(image, 0, 0, canvas.width, canvas.height);
@@ -37,27 +40,44 @@ function App() {
       };
     };
   };
-
+  const handleChange = (e) => {
+    setFile(e);
+  };
   return (
     <div className="App">
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleFile}>
         <input
           type="file"
-          onChange={(e) => handleFile(e.target.files[0])}
+          onChange={(e) => handleImage(e)}
           accept={".jpg, .jpeg, .png"}
         />
-		<input placeholder="height"/>
-		<input placeholder="width"/>
-		<input type={"submit"}/>
+        <FileUploader
+          handleChange={(e) => handleChange(e)}
+          name="file"
+          types={fileTypes}
+        />
+        <input
+          placeholder="width"
+          onChange={(e) => setwidth(e.target.value)}
+          type="number"
+        />
+        <input
+          placeholder="height"
+          onChange={(e) => setHeight(e.target.value)}
+          type="number"
+        />
+        <button type="submit"> save</button>
       </form>
 
-      <img
-        src={img}
-        alt="image"
-        height={`${height}px`}
-        width={`${WIDTH}px`}
-        id="image"
-      />
+      {img && (
+        <img
+          src={img}
+          alt="image"
+          height={`${height}px`}
+          width={`${width}px`}
+          id="image"
+        />
+      )}
     </div>
   );
 }
