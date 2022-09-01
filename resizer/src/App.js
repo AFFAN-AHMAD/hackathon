@@ -1,70 +1,65 @@
-
-
 import logo from "./logo.svg";
 import "./App.css";
-import { useState } from "react";
-
+import { useRef, useState, useEffect } from "react";
+import { saveAs } from "file-saver";
 function App() {
-	const [img, setImg] = useState("");
-	const [height, setHeight] = useState(400);
-	const [width, setWidth] = useState(400);
-	const handleSubmit = (event) => {
-		event.preventDefault();
-		console.log(img);
-	};
-	const handleFile = (file) => {
-		console.log(file);
+  const [img, setImg] = useState("");
+  const [height, setHeight] = useState(100);
+  const [WIDTH, setWidth] = useState(1000);
 
-		let reader = new FileReader();
-		reader.readAsDataURL(file);
-		reader.onload = (event) => {
-			let imgUrl = event.target.result;
-			setImg(imgUrl);
-		};
-	};
-	return (
-		<div className="App">
-			<input
-				type="file"
-				onChange={(e) => handleFile(e.target.files[0])}
-			/>
-			<form onSubmit={handleSubmit}>
-				<box>
-					{" "}
-					<label>image url</label>
-					<input
-						placeholder="image url"
-						name="url"
-						onChange={(e) => setImg(e.target.value)}
-					/>
-				</box>
-				<box>
-					{" "}
-					<label>height</label>
-					<input
-						placeholder="height"
-						onChange={(e) => setHeight(e.target.value)}
-					/>
-				</box>
-				<box>
-					{" "}
-					<label>width</label>
-					<input
-						placeholder="width"
-						onChange={(e) => setWidth(e.target.value)}
-					/>
-				</box>
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    console.log(img);
+  };
 
-				<button>save</button>
-			</form>
-			<img
-				src={img}
-				alt="image"
-				height={`${height}px`}
-				width={`${width}px`}
-			/>
-		</div>
-	);
+  const handleFile = (file) => {
+    let reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = (event) => {
+      let img_url = event.target.result;
+      setImg(img_url);
+      let image = document.createElement("img");
+      image.src = img_url;
+
+      image.onload = (e) => {
+        let canvas = document.createElement("canvas");
+        let ratio = WIDTH / image.width;
+        canvas.width = WIDTH;
+        canvas.height = image.height * ratio;
+        setHeight(image.height * ratio);
+
+        let context = canvas.getContext("2d");
+        context.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+        canvas.toBlob(function (blob) {
+          saveAs(blob, "pretty-image.png");
+        });
+      };
+    };
+  };
+
+  return (
+    <div className="App">
+      <form onSubmit={handleSubmit}>
+        <input
+          type="file"
+          onChange={(e) => handleFile(e.target.files[0])}
+          accept={".jpg, .jpeg, .png"}
+        />
+		<input placeholder="height"/>
+		<input placeholder="width"/>
+		<input type={"submit"}/>
+      </form>
+
+      <img
+        src={img}
+        alt="image"
+        height={`${height}px`}
+        width={`${WIDTH}px`}
+        id="image"
+      />
+    </div>
+  );
 }
 
 export default App;
