@@ -41,7 +41,8 @@ function Popup() {
 		};
 	};
     const handleChange = (e) => {
-        setFile(e);
+		setFile(e);
+		
     }
     return (
 			<div>
