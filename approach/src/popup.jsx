@@ -1,15 +1,15 @@
-import logo from "./logo.svg";
-import "./App.css";
+import React from "react";
+import { render } from "react-dom"
 import { useRef, useState, useEffect } from "react";
 import { FileUploader } from "react-drag-drop-files";
 import { saveAs } from "file-saver";
 const fileTypes = ["JPG", "PNG", "GIF"];
-function App() {
-	const [img, setImg] = useState("");
+function Popup() {
+    	const [img, setImg] = useState("");
 	const [file, setFile] = useState(null);
 	const [height, setHeight] = useState(100);
 	const [width, setwidth] = useState(400);
-	const [name, setName] = useState("");
+  const [name,setName] = useState("")
 	const handleImage = (e) => {
 		setFile(e.target.files[0]);
 	};
@@ -35,50 +35,50 @@ function App() {
 				context.drawImage(image, 0, 0, canvas.width, canvas.height);
 
 				canvas.toBlob(function (blob) {
-					saveAs(blob, `${name}.png`);
+					saveAs(blob, `${name}`);
 				});
 			};
 		};
 	};
-	const handleChange = (e) => {
-		setFile(e);
-	};
-	return (
-		<div className="App">
-			<form onSubmit={handleFile}>
-				<FileUploader
-					handleChange={(e) => handleChange(e)}
-					name="file"
-					types={fileTypes}
-				/>
-				<input
-					placeholder="width"
-					onChange={(e) => setwidth(e.target.value)}
-					type="number"
-				/>
-				<input
-					placeholder="height"
-					onChange={(e) => setHeight(e.target.value)}
-					type="number"
-				/>
-				<input
-					placeholder="file name"
-					onChange={(e) => setName(e.target.value)}
-				/>
-				<button type="submit"> save</button>
-			</form>
+    const handleChange = (e) => {
+        setFile(e);
+    }
+    return (
+			<div>
+				<form onSubmit={handleFile}>
+					<FileUploader
+						handleChange={(e) => handleChange(e)}
+						name="file"
+						types={fileTypes}
+					/>
+					<input
+						placeholder="width"
+						onChange={(e) => setwidth(e.target.value)}
+						type="number"
+					/>
+					<input
+						placeholder="height"
+						onChange={(e) => setHeight(e.target.value)}
+						type="number"
+					/>
+					<input
+						placeholder="file name"
+						onChange={(e) => setName(e.target.value)}
+					/>
+					<button type="submit"> save</button>
+				</form>
 
-			{img && (
-				<img
-					src={img}
-					alt="image"
-					height={`${height}px`}
-					width={`${width}px`}
-					id="image"
-				/>
-			)}
-		</div>
-	);
+				{img && (
+					<img
+						src={img}
+						alt="image"
+						height={`${height}px`}
+						width={`${width}px`}
+						id="image"
+					/>
+				)}
+			</div>
+		);
 }
 
-export default App;
+render(<Popup/>,document.getElementById("react-target"))
