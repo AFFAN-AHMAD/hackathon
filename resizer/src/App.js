@@ -46,11 +46,6 @@ function App() {
 	return (
 		<div className="App">
 			<form onSubmit={handleFile}>
-				<input
-					type="file"
-					onChange={(e) => handleImage(e)}
-					accept={".jpg, .jpeg, .png"}
-				/>
 				<FileUploader
 					handleChange={(e) => handleChange(e)}
 					name="file"
